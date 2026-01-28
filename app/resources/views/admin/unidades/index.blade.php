@@ -8,7 +8,7 @@
         </div>
     </x-slot>
 
-    <div class="py-8 px-6 space-y-6">
+    <div class="py-8 px-6 space-y-6 relative">
         <div class="bg-white shadow-sm rounded-lg">
             <div class="border-b px-6 py-4 flex items-center justify-between">
                 <p class="text-sm text-slate-500">Unidades organizacionais</p>
@@ -97,64 +97,64 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 md:pl-64 md:pr-6" data-modal>
-        <div class="bg-white rounded-lg shadow-lg w-full max-w-none">
-            <div class="px-6 py-4 flex items-center justify-between bg-slate-900 text-slate-100 rounded-t-lg">
-                <div>
-                    <p class="text-sm text-slate-300">Cadastrar nova unidade</p>
-                    <h3 class="text-lg font-semibold text-white">Nova unidade</h3>
+                {{-- MODAL DENTRO DO CONTAINER - POSICIONADO NO TOPO --}}
+        <div class="absolute inset-0 bg-black/50 hidden items-start justify-center z-50 rounded-lg pt-10" data-modal>
+            <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl mx-4 max-h-[80vh] overflow-y-auto">
+                <div class="px-6 py-4 flex items-center justify-between bg-slate-900 text-slate-100 rounded-t-lg">
+                    <div>
+                        <p class="text-sm text-slate-300">Cadastrar nova unidade</p>
+                        <h3 class="text-lg font-semibold text-white">Nova unidade</h3>
+                    </div>
+                    <button type="button" class="text-slate-300 hover:text-white" data-modal-close onclick="window.__toggleUnidadesModal?.(false)">✕</button>
                 </div>
-                <button type="button" class="text-slate-300 hover:text-white" data-modal-close onclick="window.__toggleUnidadesModal?.(false)">✕</button>
-            </div>
-            <div class="p-6">
-                <form method="POST" action="{{ route('admin.unidades.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    @csrf
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Nome</label>
-                        <input type="text" name="nome" class="mt-1 w-full rounded border-slate-300" required>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Sigla</label>
-                        <input type="text" name="sigla" class="mt-1 w-full rounded border-slate-300">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Código</label>
-                        <input type="text" name="codigo" class="mt-1 w-full rounded border-slate-300">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Tipo</label>
-                        <select name="tipo" class="mt-1 w-full rounded border-slate-300" required>
-                            <option value="secretaria">Secretaria</option>
-                            <option value="secretaria_adjunta">Secretaria Adjunta</option>
-                            <option value="gabinete">Gabinete</option>
-                            <option value="diretoria">Diretoria</option>
-                            <option value="coordenadoria">Coordenadoria</option>
-                            <option value="gerencia">Gerência</option>
-                            <option value="nucleo">Núcleo</option>
-                            <option value="consultoria">Consultoria</option>
-                            <option value="ouvidoria">Ouvidoria</option>
-                            <option value="unidade">Unidade</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700">Unidade Pai</label>
-                        <select name="parent_id" class="mt-1 w-full rounded border-slate-300">
-                            <option value="">Raiz</option>
-                            @foreach ($pais as $p)
-                                <option value="{{ $p->id }}">{{ $p->sigla ?? $p->nome }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="md:col-span-2 flex justify-end gap-2">
-                        <button type="button" data-modal-close onclick="window.__toggleUnidadesModal?.(false)" class="px-4 py-2 text-slate-700 border border-slate-200 rounded">Cancelar</button>
-                        <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded">Salvar</button>
-                    </div>
-                </form>
+                <div class="p-6">
+                    <form method="POST" action="{{ route('admin.unidades.store') }}" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @csrf
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Nome</label>
+                            <input type="text" name="nome" class="mt-1 w-full rounded border-slate-300" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Sigla</label>
+                            <input type="text" name="sigla" class="mt-1 w-full rounded border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Código</label>
+                            <input type="text" name="codigo" class="mt-1 w-full rounded border-slate-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Tipo</label>
+                            <select name="tipo" class="mt-1 w-full rounded border-slate-300" required>
+                                <option value="secretaria">Secretaria</option>
+                                <option value="secretaria_adjunta">Secretaria Adjunta</option>
+                                <option value="gabinete">Gabinete</option>
+                                <option value="diretoria">Diretoria</option>
+                                <option value="coordenadoria">Coordenadoria</option>
+                                <option value="gerencia">Gerência</option>
+                                <option value="nucleo">Núcleo</option>
+                                <option value="consultoria">Consultoria</option>
+                                <option value="ouvidoria">Ouvidoria</option>
+                                <option value="unidade">Unidade</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700">Unidade Pai</label>
+                            <select name="parent_id" class="mt-1 w-full rounded border-slate-300">
+                                <option value="">Raiz</option>
+                                @foreach ($pais as $p)
+                                    <option value="{{ $p->id }}">{{ $p->sigla ?? $p->nome }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="md:col-span-2 flex justify-end gap-2">
+                            <button type="button" data-modal-close onclick="window.__toggleUnidadesModal?.(false)" class="px-4 py-2 text-slate-700 border border-slate-200 rounded">Cancelar</button>
+                            <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded">Salvar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
 
     <script>
         (() => {
@@ -191,9 +191,12 @@
                     event.preventDefault();
                     hide();
                 }
-                const modal = getModal();
-                if (modal && event.target === modal) {
-                    hide();
+                // clique fora não fecha o modal
+            });
+
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    event.preventDefault();
                 }
             });
         })();
