@@ -69,13 +69,44 @@
                                                 </span>
                                             </td>
                                             <td class="px-3 py-2 text-right">
-                                                <form action="{{ route('admin.catalogos.toggle', [$bloco['tipo'], $item->id]) }}" method="POST">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <button type="submit" class="text-sm text-slate-600 hover:underline">
-                                                        {{ $item->ativo ? 'Inativar' : 'Ativar' }}
-                                                    </button>
-                                                </form>
+                                                <div class="flex items-center justify-end gap-3">
+                                                    <details class="relative">
+                                                        <summary class="text-sm text-indigo-600 cursor-pointer">Editar</summary>
+                                                        <div class="absolute right-0 z-10 mt-2 w-80 bg-white border border-slate-200 rounded-lg shadow-lg p-4">
+                                                            <form action="{{ route('admin.catalogos.update', [$bloco['tipo'], $item->id]) }}" method="POST" class="space-y-3">
+                                                                @csrf
+                                                                @method('PATCH')
+                                                                <div>
+                                                                    <label class="block text-xs font-medium text-slate-600">Nome</label>
+                                                                    <input type="text" name="nome" value="{{ $item->nome }}" class="mt-1 w-full rounded border-slate-300 text-sm" required>
+                                                                </div>
+                                                                <div>
+                                                                    <label class="block text-xs font-medium text-slate-600">Descrição</label>
+                                                                    <textarea name="descricao" rows="2" class="mt-1 w-full rounded border-slate-300 text-sm">{{ $item->descricao }}</textarea>
+                                                                </div>
+                                                                <div>
+                                                                    <label class="block text-xs font-medium text-slate-600">Ordem</label>
+                                                                    <input type="number" name="ordem" value="{{ $item->ordem }}" class="mt-1 w-full rounded border-slate-300 text-sm">
+                                                                </div>
+                                                                <div class="flex justify-end gap-2">
+                                                                    <button type="submit" class="px-3 py-1.5 text-sm bg-slate-900 text-white rounded">Salvar</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </details>
+                                                    <form action="{{ route('admin.catalogos.toggle', [$bloco['tipo'], $item->id]) }}" method="POST">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="text-sm text-slate-600 hover:underline">
+                                                            {{ $item->ativo ? 'Inativar' : 'Ativar' }}
+                                                        </button>
+                                                    </form>
+                                                    <form action="{{ route('admin.catalogos.destroy', [$bloco['tipo'], $item->id]) }}" method="POST" onsubmit="return confirm('Excluir este item?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="text-sm text-rose-600 hover:underline">Excluir</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @empty

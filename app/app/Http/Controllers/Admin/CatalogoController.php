@@ -65,4 +65,46 @@ class CatalogoController extends Controller
 
         return back()->with('sucesso', 'Status atualizado.');
     }
+
+    public function update(Request $request, string $tipo, int $id)
+    {
+        $dados = $request->validate([
+            'nome' => 'required|string|max:255',
+            'descricao' => 'nullable|string',
+            'ordem' => 'nullable|integer|min:0',
+        ]);
+
+        $mapa = [
+            'categoria' => CatalogoCategoria::class,
+            'prioridade' => CatalogoPrioridade::class,
+            'tipo' => CatalogoTipoDemanda::class,
+            'natureza' => CatalogoNatureza::class,
+        ];
+
+        abort_unless(isset($mapa[$tipo]), 404);
+
+        $classe = $mapa[$tipo];
+        $item = $classe::findOrFail($id);
+        $item->update($dados);
+
+        return back()->with('sucesso', 'Item atualizado.');
+    }
+
+    public function destroy(string $tipo, int $id)
+    {
+        $mapa = [
+            'categoria' => CatalogoCategoria::class,
+            'prioridade' => CatalogoPrioridade::class,
+            'tipo' => CatalogoTipoDemanda::class,
+            'natureza' => CatalogoNatureza::class,
+        ];
+
+        abort_unless(isset($mapa[$tipo]), 404);
+
+        $classe = $mapa[$tipo];
+        $item = $classe::findOrFail($id);
+        $item->delete();
+
+        return back()->with('sucesso', 'Item excluído.');
+    }
 }

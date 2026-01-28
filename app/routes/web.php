@@ -47,6 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/catalogos', [\App\Http\Controllers\Admin\CatalogoController::class, 'index'])->name('admin.catalogos.index');
             Route::post('/catalogos', [\App\Http\Controllers\Admin\CatalogoController::class, 'store'])->name('admin.catalogos.store');
             Route::patch('/catalogos/{tipo}/{id}/toggle', [\App\Http\Controllers\Admin\CatalogoController::class, 'toggle'])->name('admin.catalogos.toggle');
+            Route::patch('/catalogos/{tipo}/{id}', [\App\Http\Controllers\Admin\CatalogoController::class, 'update'])->name('admin.catalogos.update');
+            Route::delete('/catalogos/{tipo}/{id}', [\App\Http\Controllers\Admin\CatalogoController::class, 'destroy'])->name('admin.catalogos.destroy');
         });
     });
 

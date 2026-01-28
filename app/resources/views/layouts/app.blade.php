@@ -43,7 +43,7 @@
                         @endif
                     </div>
 
-                    @if ($user?->temPermissao('usuarios.gerenciar') || $user?->temPermissao('unidades.gerenciar') || $user?->temPermissao('ciclos.gerenciar'))
+                    @if ($user?->temPermissao('usuarios.gerenciar') || $user?->temPermissao('unidades.gerenciar') || $user?->temPermissao('ciclos.gerenciar') || $user?->temPermissao('catalogos.gerenciar'))
                         <div>
                             <div class="text-xs uppercase tracking-wide text-slate-500 px-2 mb-2">Administração</div>
                             @if ($user?->temPermissao('unidades.gerenciar'))
@@ -54,6 +54,11 @@
                             @if ($user?->temPermissao('ciclos.gerenciar'))
                                 <a href="{{ route('admin.ciclos.index') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.ciclos.*') ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
                                     <span class="mr-2">🗓️</span> Ciclos do PCA
+                                </a>
+                            @endif
+                            @if ($user?->temPermissao('catalogos.gerenciar'))
+                                <a href="{{ route('admin.catalogos.index') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
+                                    <span class="mr-2">🧩</span> Catálogos
                                 </a>
                             @endif
                             @if ($user?->temPermissao('usuarios.gerenciar'))
