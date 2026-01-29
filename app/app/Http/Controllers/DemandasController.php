@@ -154,7 +154,7 @@ class DemandasController extends Controller
             'descricao' => 'required|string',
             'tipo_id' => 'required|exists:catalogo_tipo_demandas,id',
             'natureza_id' => 'required|exists:catalogo_naturezas,id',
-            'categoria_id' => 'required|exists:catalogo_categorias,id',
+            'categoria_id' => 'nullable|exists:catalogo_categorias,id',
             'justificativa' => 'required|string',
             'prioridade_id' => 'required|exists:catalogo_prioridades,id',
             'quantidade_estimada' => 'nullable|string|max:255',

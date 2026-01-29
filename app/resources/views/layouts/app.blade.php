@@ -57,9 +57,21 @@
                                 </a>
                             @endif
                             @if ($user?->temPermissao('catalogos.gerenciar'))
-                                <a href="{{ route('admin.catalogos.index') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
-                                    <span class="mr-2">🧩</span> Catálogos
-                                </a>
+                                <div class="pt-1">
+                                    <div class="text-xs uppercase tracking-wide text-slate-500 px-2 mb-2">Catálogos</div>
+                                    <a href="{{ route('admin.catalogos.tipo', 'categoria') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') && request()->route('tipo') === 'categoria' ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
+                                        <span class="mr-2">🏷️</span> Categorias
+                                    </a>
+                                    <a href="{{ route('admin.catalogos.tipo', 'prioridade') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') && request()->route('tipo') === 'prioridade' ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
+                                        <span class="mr-2">⚡</span> Prioridades
+                                    </a>
+                                    <a href="{{ route('admin.catalogos.tipo', 'tipo') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') && request()->route('tipo') === 'tipo' ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
+                                        <span class="mr-2">🧾</span> Tipos de demanda
+                                    </a>
+                                    <a href="{{ route('admin.catalogos.tipo', 'natureza') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.catalogos.*') && request()->route('tipo') === 'natureza' ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">
+                                        <span class="mr-2">🧠</span> Naturezas
+                                    </a>
+                                </div>
                             @endif
                             @if ($user?->temPermissao('usuarios.gerenciar'))
                                 <a href="{{ route('admin.usuarios.index') }}" class="flex items-center px-3 py-2 rounded-lg text-sm font-medium {{ request()->routeIs('admin.usuarios.*') ? 'bg-slate-800 text-white' : 'hover:bg-slate-800/60 text-slate-200' }}">

@@ -45,6 +45,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::middleware('permissao:catalogos.gerenciar')->group(function () {
             Route::get('/catalogos', [\App\Http\Controllers\Admin\CatalogoController::class, 'index'])->name('admin.catalogos.index');
+            Route::get('/catalogos/{tipo}', [\App\Http\Controllers\Admin\CatalogoController::class, 'index'])->name('admin.catalogos.tipo');
             Route::post('/catalogos', [\App\Http\Controllers\Admin\CatalogoController::class, 'store'])->name('admin.catalogos.store');
             Route::patch('/catalogos/{tipo}/{id}/toggle', [\App\Http\Controllers\Admin\CatalogoController::class, 'toggle'])->name('admin.catalogos.toggle');
             Route::patch('/catalogos/{tipo}/{id}', [\App\Http\Controllers\Admin\CatalogoController::class, 'update'])->name('admin.catalogos.update');

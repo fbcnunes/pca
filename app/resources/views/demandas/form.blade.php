@@ -80,7 +80,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-700">Categoria</label>
-                    <select name="categoria_id" class="mt-1 w-full rounded border-slate-300" required>
+                    <select name="categoria_id" class="mt-1 w-full rounded border-slate-300">
                         <option value="">Selecione</option>
                         @foreach ($categorias as $categoria)
                             <option value="{{ $categoria->id }}" @selected(old('categoria_id', $model?->categoria_id) == $categoria->id)>{{ $categoria->nome }}</option>

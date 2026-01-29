@@ -11,14 +11,20 @@ use Illuminate\Http\Request;
 
 class CatalogoController extends Controller
 {
-    public function index()
+    public function index(string $tipo = null)
     {
         $categorias = CatalogoCategoria::orderBy('ordem')->orderBy('nome')->get();
         $prioridades = CatalogoPrioridade::orderBy('ordem')->orderBy('nome')->get();
         $tipos = CatalogoTipoDemanda::orderBy('ordem')->orderBy('nome')->get();
         $naturezas = CatalogoNatureza::orderBy('ordem')->orderBy('nome')->get();
 
-        return view('admin.catalogos.index', compact('categorias', 'prioridades', 'tipos', 'naturezas'));
+        return view('admin.catalogos.index', [
+            'categorias' => $categorias,
+            'prioridades' => $prioridades,
+            'tipos' => $tipos,
+            'naturezas' => $naturezas,
+            'tipoSelecionado' => $tipo,
+        ]);
     }
 
     public function store(Request $request)

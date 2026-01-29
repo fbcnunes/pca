@@ -17,6 +17,10 @@
                     ['titulo' => 'Tipos de demanda', 'tipo' => 'tipo', 'itens' => $tipos],
                     ['titulo' => 'Naturezas', 'tipo' => 'natureza', 'itens' => $naturezas],
                 ];
+
+                if (!empty($tipoSelecionado)) {
+                    $blocos = array_values(array_filter($blocos, fn($bloco) => $bloco['tipo'] === $tipoSelecionado));
+                }
             @endphp
 
             @foreach ($blocos as $bloco)
@@ -45,7 +49,7 @@
                             </div>
                         </form>
 
-                        <div class="overflow-x-auto">
+                        <div class="overflow-x-auto overflow-y-visible">
                             <table class="min-w-full divide-y divide-slate-200">
                                 <thead class="bg-slate-50 text-left text-xs font-semibold text-slate-600">
                                     <tr>
@@ -70,30 +74,17 @@
                                             </td>
                                             <td class="px-3 py-2 text-right">
                                                 <div class="flex items-center justify-end gap-3">
-                                                    <details class="relative">
-                                                        <summary class="text-sm text-indigo-600 cursor-pointer">Editar</summary>
-                                                        <div class="absolute right-0 z-10 mt-2 w-80 bg-white border border-slate-200 rounded-lg shadow-lg p-4">
-                                                            <form action="{{ route('admin.catalogos.update', [$bloco['tipo'], $item->id]) }}" method="POST" class="space-y-3">
-                                                                @csrf
-                                                                @method('PATCH')
-                                                                <div>
-                                                                    <label class="block text-xs font-medium text-slate-600">Nome</label>
-                                                                    <input type="text" name="nome" value="{{ $item->nome }}" class="mt-1 w-full rounded border-slate-300 text-sm" required>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="block text-xs font-medium text-slate-600">Descrição</label>
-                                                                    <textarea name="descricao" rows="2" class="mt-1 w-full rounded border-slate-300 text-sm">{{ $item->descricao }}</textarea>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="block text-xs font-medium text-slate-600">Ordem</label>
-                                                                    <input type="number" name="ordem" value="{{ $item->ordem }}" class="mt-1 w-full rounded border-slate-300 text-sm">
-                                                                </div>
-                                                                <div class="flex justify-end gap-2">
-                                                                    <button type="submit" class="px-3 py-1.5 text-sm bg-slate-900 text-white rounded">Salvar</button>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </details>
+                                                    <button
+                                                        type="button"
+                                                        class="text-sm text-indigo-600 hover:underline"
+                                                        data-catalogo-edit
+                                                        data-action="{{ route('admin.catalogos.update', [$bloco['tipo'], $item->id]) }}"
+                                                        data-nome="{{ $item->nome }}"
+                                                        data-descricao="{{ $item->descricao }}"
+                                                        data-ordem="{{ $item->ordem }}"
+                                                    >
+                                                        Editar
+                                                    </button>
                                                     <form action="{{ route('admin.catalogos.toggle', [$bloco['tipo'], $item->id]) }}" method="POST">
                                                         @csrf
                                                         @method('PATCH')
@@ -122,4 +113,73 @@
             @endforeach
         </div>
     </div>
+
+    <div class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50" data-catalogo-modal>
+        <div class="bg-white rounded-lg shadow-lg w-full max-w-xl mx-6">
+            <div class="px-6 py-4 flex items-center justify-between bg-slate-900 text-slate-100 rounded-t-lg">
+                <div>
+                    <p class="text-sm text-slate-300">Editar catálogo</p>
+                    <h3 class="text-lg font-semibold text-white">Atualizar item</h3>
+                </div>
+                <button type="button" class="text-slate-300 hover:text-white" data-catalogo-close>✕</button>
+            </div>
+            <div class="p-6">
+                <form method="POST" class="space-y-4" data-catalogo-form>
+                    @csrf
+                    @method('PATCH')
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Nome</label>
+                        <input type="text" name="nome" class="mt-1 w-full rounded border-slate-300" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Descrição</label>
+                        <textarea name="descricao" rows="2" class="mt-1 w-full rounded border-slate-300"></textarea>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700">Ordem</label>
+                        <input type="number" name="ordem" class="mt-1 w-full rounded border-slate-300">
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" data-catalogo-close class="px-4 py-2 text-slate-700 border border-slate-200 rounded">Cancelar</button>
+                        <button type="submit" class="px-4 py-2 bg-slate-900 text-white rounded">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            const modal = document.querySelector('[data-catalogo-modal]');
+            const form = document.querySelector('[data-catalogo-form]');
+            if (!modal || !form) return;
+
+            const show = () => {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+
+            const hide = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            document.addEventListener('click', (event) => {
+                const trigger = event.target.closest('[data-catalogo-edit]');
+                if (trigger) {
+                    event.preventDefault();
+                    form.action = trigger.dataset.action;
+                    form.querySelector('[name="nome"]').value = trigger.dataset.nome || '';
+                    form.querySelector('[name="descricao"]').value = trigger.dataset.descricao || '';
+                    form.querySelector('[name="ordem"]').value = trigger.dataset.ordem || '';
+                    show();
+                }
+
+                if (event.target.closest('[data-catalogo-close]')) {
+                    event.preventDefault();
+                    hide();
+                }
+            });
+        })();
+    </script>
 </x-app-layout>
