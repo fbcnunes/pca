@@ -167,6 +167,9 @@ class DatabaseSeeder extends Seeder
             ['nome' => 'Em covalidação no Gabinete', 'descricao' => 'Aguardando Gabinete', 'ordem' => 5, 'ativo' => true],
             ['nome' => 'Devolvida para ajustes', 'descricao' => 'Devolvida com pendências', 'ordem' => 6, 'ativo' => true],
             ['nome' => 'Validada', 'descricao' => 'Apta para consolidação', 'ordem' => 7, 'ativo' => true],
+            ['nome' => 'Validada c/ alteração', 'descricao' => 'Validada com ajustes de quantidade/valor', 'ordem' => 8, 'ativo' => true],
+            ['nome' => 'Consolidada', 'descricao' => 'Incluída na versão do PCA', 'ordem' => 9, 'ativo' => true],
+            ['nome' => 'Consolidada c/ alteração', 'descricao' => 'Incluída na versão do PCA com ajustes', 'ordem' => 10, 'ativo' => true],
         ]);
     }
 }

@@ -136,6 +136,9 @@ Este catálogo padroniza os estados do sistema e evita ambiguidades.
 | Em covalidação no Gabinete | Regra especial aplicada |
 | Devolvida para ajustes | Reprovada com pendências |
 | Validada | Apta para consolidação no PCA |
+| Validada c/ alteração | Validada com ajustes de quantidade/valor |
+| Consolidada | Incluída na versão do PCA |
+| Consolidada c/ alteração | Incluída na versão do PCA com ajustes |
 
 ---
 
@@ -143,8 +146,10 @@ Este catálogo padroniza os estados do sistema e evita ambiguidades.
 
 | Status | Descrição |
 |---|---|
-| Aguardando consolidação | Demanda validada, ainda não consolidada |
-| Consolidada pela DAF | Integrada à versão preliminar do PCA |
+| Validada | Demanda validada, aguardando consolidação |
+| Validada c/ alteração | Demanda validada com ajustes pendentes de consolidação |
+| Consolidada | Integrada à versão do PCA |
+| Consolidada c/ alteração | Integrada à versão do PCA com ajustes |
 | Excluída do PCA | Retirada do plano com justificativa |
 | Adiada para exercício futuro | Reprogramada para outro ciclo |
 

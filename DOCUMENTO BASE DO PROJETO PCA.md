@@ -191,10 +191,15 @@ A hierarquia organizacional será utilizada para:
 - Em covalidação no Gabinete  
 - Devolvida para ajustes  
 - Validada  
+- Validada c/ alteração  
+- Consolidada  
+- Consolidada c/ alteração  
 
 ### Status do PCA
-- Aguardando consolidação  
-- Consolidada pela DAF  
+- Validada  
+- Validada c/ alteração  
+- Consolidada  
+- Consolidada c/ alteração  
 - Excluída do PCA  
 - Adiada para exercício futuro  
 

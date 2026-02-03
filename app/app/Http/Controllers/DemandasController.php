@@ -60,12 +60,25 @@ class DemandasController extends Controller
         $this->autorizar($demanda);
 
         $usuarioEValidador = $demanda->demandante_id !== Auth::id() && $this->podeValidarDemanda($demanda);
+        $somenteAjuste = $this->somenteAjustePermitido($demanda);
+        $versaoId = request()->get('versao');
+        $usuarioConsolidador = $this->podeConsolidarDemanda($demanda);
+
+        if ($somenteAjuste && $demanda->demandante_id !== Auth::id() && ! $this->podeConsolidarDemanda($demanda)) {
+            abort(403);
+        }
+
+        $voltar = $usuarioEValidador
+            ? route('validacao.index')
+            : ($usuarioConsolidador && $versaoId ? route('admin.pca.index', ['versao' => $versaoId]) : route('demandas.index'));
 
         return view('demandas.form', array_merge(
             $this->options(),
             [
                 'demanda' => $demanda,
-                'voltar' => $usuarioEValidador ? route('validacao.index') : route('demandas.index'),
+                'voltar' => $voltar,
+                'somenteAjuste' => $somenteAjuste,
+                'versao' => $versaoId,
             ]
         ));
     }
@@ -74,10 +87,23 @@ class DemandasController extends Controller
     {
         $this->autorizar($demanda);
         $usuarioEValidador = $demanda->demandante_id !== Auth::id() && $this->podeValidarDemanda($demanda);
+        $somenteAjuste = $this->somenteAjustePermitido($demanda);
+        $usuarioConsolidador = $this->podeConsolidarDemanda($demanda);
+        $versaoId = $request->get('versao');
 
-        $dados = $this->normalizarValorEstimado($this->validateData($request));
-        $dados['unidade_id'] = $demanda->demandante_id === Auth::id() ? $this->unidadeUsuario() : $demanda->unidade_id;
-        $demanda->update($dados);
+        if ($somenteAjuste) {
+            abort_if($demanda->demandante_id !== Auth::id() && ! $this->podeConsolidarDemanda($demanda), 403);
+            $dados = $this->normalizarValorEstimado($this->validateAjusteData($request));
+            $demanda->update($dados);
+
+            if ($demanda->status?->nome === 'Validada') {
+                $demanda->update(['status_demanda_id' => $this->statusValidadaAlterada()->id]);
+            }
+        } else {
+            $dados = $this->normalizarValorEstimado($this->validateData($request));
+            $dados['unidade_id'] = $demanda->demandante_id === Auth::id() ? $this->unidadeUsuario() : $demanda->unidade_id;
+            $demanda->update($dados);
+        }
 
         HistoricoDemanda::create([
             'demanda_id' => $demanda->id,
@@ -90,6 +116,10 @@ class DemandasController extends Controller
 
         if ($usuarioEValidador) {
             return redirect()->route('validacao.index')->with('sucesso', 'Demanda atualizada.');
+        }
+
+        if ($usuarioConsolidador && $versaoId) {
+            return redirect()->route('admin.pca.index', ['versao' => $versaoId])->with('sucesso', 'Demanda atualizada.');
         }
 
         return redirect()->route('demandas.index')->with('sucesso', 'Demanda atualizada.');
@@ -141,6 +171,10 @@ class DemandasController extends Controller
             return;
         }
 
+        if ($this->podeConsolidarDemanda($demanda)) {
+            return;
+        }
+
         abort(403);
     }
 
@@ -172,6 +206,16 @@ class DemandasController extends Controller
         ]);
     }
 
+    protected function validateAjusteData(Request $request): array
+    {
+        return $request->validate([
+            'quantidade_estimada' => 'nullable|string|max:255',
+            'valor_estimado' => ['nullable', 'regex:/^(\\d{1,3}(\\.\\d{3})*|\\d+)(,\\d{2})?$/'],
+        ], [
+            'valor_estimado.regex' => 'Informe o valor no formato 0,00 (ex.: 1.234,56).',
+        ]);
+    }
+
     protected function options(): array
     {
         $unidadeId = $this->unidadeUsuario();
@@ -198,6 +242,11 @@ class DemandasController extends Controller
     protected function statusValidada(): StatusDemanda
     {
         return StatusDemanda::where('nome', 'Validada')->firstOrFail();
+    }
+
+    protected function statusValidadaAlterada(): StatusDemanda
+    {
+        return StatusDemanda::where('nome', 'Validada c/ alteração')->firstOrFail();
     }
 
     protected function normalizarValorEstimado(array $dados): array
@@ -277,6 +326,19 @@ class DemandasController extends Controller
             ->pluck('perfil_usuario.unidade_id')
             ->unique()
             ->toArray() ?? [];
+    }
+
+    protected function somenteAjustePermitido(Demanda $demanda): bool
+    {
+        $status = $demanda->status?->nome;
+        return in_array($status, ['Validada', 'Validada c/ alteração']);
+    }
+
+    protected function podeConsolidarDemanda(Demanda $demanda): bool
+    {
+        $status = $demanda->status?->nome;
+        return Auth::user()?->temPermissao('pca.consolidar')
+            && in_array($status, ['Validada', 'Validada c/ alteração'], true);
     }
 
     protected function exigePermissaoCriar(): void

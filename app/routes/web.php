@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CicloController;
 use App\Http\Controllers\Admin\PerfilPermissaoController;
 use App\Http\Controllers\Admin\UnidadeController;
 use App\Http\Controllers\Admin\UsuarioController;
+use App\Http\Controllers\Admin\ConsolidacaoController;
 use App\Http\Controllers\DemandasController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ValidacaoController;
@@ -50,6 +51,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::patch('/catalogos/{tipo}/{id}/toggle', [\App\Http\Controllers\Admin\CatalogoController::class, 'toggle'])->name('admin.catalogos.toggle');
             Route::patch('/catalogos/{tipo}/{id}', [\App\Http\Controllers\Admin\CatalogoController::class, 'update'])->name('admin.catalogos.update');
             Route::delete('/catalogos/{tipo}/{id}', [\App\Http\Controllers\Admin\CatalogoController::class, 'destroy'])->name('admin.catalogos.destroy');
+        });
+
+        Route::middleware('permissao:pca.consolidar')->group(function () {
+            Route::get('/pca', [ConsolidacaoController::class, 'index'])->name('admin.pca.index');
+            Route::post('/pca/versoes', [ConsolidacaoController::class, 'storeVersao'])->name('admin.pca.versoes.store');
+            Route::patch('/pca/versoes/{versao}/demandas/{demanda}', [ConsolidacaoController::class, 'toggleItem'])->name('admin.pca.itens.toggle');
+            Route::patch('/pca/itens/{item}', [ConsolidacaoController::class, 'updateItem'])->name('admin.pca.itens.update');
         });
     });
 
